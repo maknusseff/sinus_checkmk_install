@@ -2,16 +2,19 @@
 
 function offline_installation {
 
-    echo Checking offline installation
+    echo Check if local installer is available...
 
     find check-mk-raw-*.deb > temp.txt
     cmk=$(cat temp.txt)
 
     if [ -z "$cmk" ]; then
-        online_installation
+        echo No local installer found! Continue with online installation
+        #online_installation
     fi
     
-    exit 1
+    echo Local installer found!
+    
+    checkmk_installation
 
 }
 
@@ -50,15 +53,17 @@ function online_installation {
 
     wget https://download.checkmk.com/checkmk/"$cversion"/check-mk-raw-"$cversion"_0."$uversion"_amd64.deb
 
-    apt install gdebi-core -y
-
     checkmk_installation
 
 }
 
 function checkmk_installation {
 
-    gdebi check-mk-raw-*_amd64.deb
+    cat /etc/lsb-release > temp.txt
+    uv=$(grep -i "CODENAME" temp.txt)
+    uversion=${uv#*CODENAME=}
+
+    apt install ./check-mk-raw-*"$uversion"_amd64.deb
 
     read -p "Enter site name: " sitename
 
@@ -73,6 +78,7 @@ function checkmk_installation {
     omd start $sitename
     echo Your site "$sitename" was created successfully! Your cmkadmin password is "$b". Continue on http://IP-ADDRESS/"$sitename"
 
+    exit 0
 }
 
 offline_installation
