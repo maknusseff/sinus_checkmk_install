@@ -9,7 +9,7 @@ function offline_installation {
 
     if [ -z "$cmk" ]; then
         echo No local installer found! Continue with online installation
-        #online_installation
+        online_installation
     fi
     
     echo Local installer found!
