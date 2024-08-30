@@ -63,7 +63,7 @@ function checkmk_installation {
     uv=$(grep -i "CODENAME" temp.txt)
     uversion=${uv#*CODENAME=}
 
-    apt install ./check-mk-raw-*"$uversion"_amd64.deb
+    apt install ./check-mk-raw-*"$uversion"_amd64.deb -y
 
     read -p "Enter site name: " sitename
 
